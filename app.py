@@ -8,7 +8,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = "pt-maju-jaya-demo-secret-change-me"
-DB = "maju_jaya.db"
+DB = "/tmp/maju_jaya.db"
 
 ROLE_LABELS = {
     "ADMIN": "System Admin",
