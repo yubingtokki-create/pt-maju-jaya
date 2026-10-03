@@ -1,0 +1,28 @@
+{% extends "base.html" %}{% set title="Credit Assessment — " ~ so.so_number %}
+{% block content %}
+<div class="grid two">
+<section class="card"><div class="card-head"><h2>Customer Credit Profile</h2><span class="pill {{ 'danger' if assessment.risk_level=='HIGH' else 'warning' if assessment.risk_level=='MEDIUM' else 'success' }}">{{ assessment.risk_level }}</span></div>
+<div class="metric-list">
+<div><span>Customer</span><b>{{ customer.customer_code }} — {{ customer.customer_name }}</b></div>
+<div><span>Credit Limit</span><b>{{ assessment.credit_limit|money }}</b></div>
+<div><span>Current Outstanding</span><b>{{ assessment.current_outstanding|money }}</b></div>
+<div><span>Available Credit</span><b>{{ assessment.available_credit|money }}</b></div>
+<div><span>New Order</span><b>{{ assessment.order_amount|money }}</b></div>
+<div><span>Overdue Amount</span><b>{{ assessment.overdue_amount|money }}</b></div>
+<div><span>Overdue Invoices</span><b>{{ assessment.overdue_invoice_count }}</b></div>
+<div><span>Late Payments</span><b>{{ assessment.late_payment_count }}</b></div>
+<div><span>Average Payment Days</span><b>{{ assessment.average_payment_days }}</b></div>
+<div><span>Rejected Orders</span><b>{{ assessment.rejected_order_count }}</b></div>
+<div><span>Historical Performance</span><b>{{ assessment.historical_performance }}</b></div>
+<div><span>Suspicious Flag</span><b>{{ 'YES' if assessment.suspicious_flag else 'NO' }}</b></div>
+</div></section>
+<section class="card"><h2>Decision Engine</h2><div class="decision {{ assessment.decision|lower|replace(' ','-') }}"><strong>{{ assessment.decision }}</strong><p>{{ assessment.decision_reason }}</p></div>
+{% if assessment.red_flags %}<h3>Red Flags</h3><ul class="redflags">{% for f in assessment.red_flags %}<li>{{ f }}</li>{% endfor %}</ul>{% else %}<div class="notice success">No red flags detected.</div>{% endif %}
+<div class="notice">Automatic approval is allowed only when customer is active, credit is sufficient, suspicious flag is false, and payment history is acceptable.</div>
+<form method="post" action="{{ url_for('credit_decision',so_id=so.sales_order_id) }}"><label>Remarks<textarea name="remarks" placeholder="Decision rationale"></textarea></label><div class="form-actions">
+{% if assessment.decision == 'APPROVED' %}<button name="decision" value="APPROVED" class="btn primary">Approve Credit</button>{% endif %}
+<button name="decision" value="REVIEW REQUIRED" class="btn warning-btn">Request Review</button>
+<button name="decision" value="REJECTED" class="btn danger-btn">Reject</button></div></form>
+</section></div>
+<section class="card"><h2>Historical Credit Assessments</h2><table><thead><tr><th>Date</th><th>Outstanding</th><th>Overdue</th><th>Late</th><th>Avg Days</th><th>Risk</th><th>Status</th></tr></thead><tbody>{% for h in history %}<tr><td>{{ h.review_date }}</td><td>{{ h.outstanding|money }}</td><td>{{ h.overdue_amount|money }}</td><td>{{ h.late_payment_count }}</td><td>{{ h.average_payment_days }}</td><td>{{ h.risk_level }}</td><td>{{ h.review_status }}</td></tr>{% else %}<tr><td colspan="7">No prior review records.</td></tr>{% endfor %}</tbody></table></section>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}{% set title="New Sales Order" %}
+{% block content %}
+<form method="post" id="soForm">
+<div class="grid two">
+<section class="card"><h2>Order Information</h2><div class="form-grid">
+<label>Customer<select name="customer_id" id="customer_id" required><option value="">Select customer</option>{% for c in customers %}<option value="{{ c.customer_id }}">{{ c.customer_code }} — {{ c.customer_name }}</option>{% endfor %}</select></label>
+<label>Sales Type<select name="sales_type" id="sales_type"><option value="CREDIT">Credit</option><option value="CASH">Cash</option></select></label>
+<label>Payment Terms<select name="payment_term_id">{% for t in terms %}<option value="{{ t.payment_term_id }}">{{ t.name }}</option>{% endfor %}</select></label>
+<label>Delivery Date<input name="delivery_date" type="date" required></label>
+<label class="span2">Delivery Address<textarea name="delivery_address" required></textarea></label>
+<label class="span2">Customer Notes<textarea name="customer_notes"></textarea></label>
+</div></section>
+<section class="card"><h2>Control Notice</h2><div class="notice"><b>Credit sales</b> require Credit Approval before Shipping.</div><div class="notice"><b>Discount > 10%</b> requires Manager Approval and is blocked in this demo until approved.</div><div class="notice"><b>Stock</b> is validated before submission.</div></section>
+</div>
+<section class="card"><div class="card-head"><h2>Order Lines</h2><button type="button" class="btn small" onclick="addLine()">+ Add Product</button></div>
+<table id="lines"><thead><tr><th>Product</th><th>Qty</th><th>Unit Price</th><th>Discount %</th><th>Line Total</th><th></th></tr></thead><tbody></tbody></table>
+<div class="totals"><div>Subtotal <b id="subtotal">Rp 0</b></div><div>Discount <b id="discount">Rp 0</b></div><div>Tax 11% <b id="tax">Rp 0</b></div><label>Shipping Cost <input name="shipping_cost" id="shipping_cost" type="number" value="0" min="0"></label><div class="grand">Grand Total <b id="grand">Rp 0</b></div></div>
+</section>
+<div class="form-actions"><a class="btn" href="{{ url_for('sales_orders') }}">Cancel</a><button class="btn primary">Submit Sales Order</button></div>
+</form>
+<script>
+const products={{ products|tojson }};
+function addLine(){
+ const tr=document.createElement('tr');
+ tr.innerHTML=`<td><select name="product_id" class="product" onchange="price(this)" required><option value="">Select product</option>${products.map(p=>`<option value="${p.product_id}" data-price="${p.selling_price}" data-stock="${p.available_stock}">${p.product_code} — ${p.product_name} (stock ${p.available_stock})</option>`).join('')}</select></td>
+ <td><input name="quantity" class="qty" type="number" min="1" value="1" onchange="calc()" required></td>
+ <td><input class="price" type="number" readonly></td>
+ <td><input name="discount_pct" class="disc" type="number" min="0" max="10" value="0" onchange="calc()"></td>
+ <td class="line-total">Rp 0</td><td><button type="button" class="btn small danger-btn" onclick="this.closest('tr').remove();calc()">×</button></td>`;
+ document.querySelector('#lines tbody').appendChild(tr); calc();
+}
+function price(sel){sel.closest('tr').querySelector('.price').value=sel.selectedOptions[0].dataset.price||0;calc();}
+function calc(){
+ let sub=0,disc=0,tax=0;
+ document.querySelectorAll('#lines tbody tr').forEach(r=>{
+   const p=Number(r.querySelector('.price').value||0),q=Number(r.querySelector('.qty').value||0),d=Number(r.querySelector('.disc').value||0);
+   const base=p*q, da=base*d/100, net=base-da, tx=net*.11;
+   sub+=base;disc+=da;tax+=tx;r.querySelector('.line-total').textContent=fmt(net+tx);
+ });
+ const ship=Number(document.querySelector('#shipping_cost').value||0);
+ document.querySelector('#subtotal').textContent=fmt(sub);
+ document.querySelector('#discount').textContent=fmt(disc);
+ document.querySelector('#tax').textContent=fmt(tax);
+ document.querySelector('#grand').textContent=fmt(sub-disc+tax+ship);
+}
+function fmt(n){return 'Rp '+Math.round(n).toLocaleString('id-ID');}
+document.querySelector('#shipping_cost').addEventListener('input',calc); addLine();
+</script>
+{% endblock %}

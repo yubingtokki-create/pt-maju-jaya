@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% set title="Cash Receipts" %}
+{% block content %}
+<section class="card"><h2>Outstanding Invoices</h2><table><thead><tr><th>Invoice</th><th>Customer</th><th>Invoice Amount</th><th>Outstanding</th><th>Due Date</th><th></th></tr></thead><tbody>
+{% for i in invoices %}<tr><td>{{ i.invoice_number }}</td><td>{{ i.customer_name }}</td><td>{{ i.invoice_amount|money }}</td><td>{{ i.outstanding_amount|money }}</td><td>{{ i.due_date }}</td><td>{% if current_user.role=='CASHIER' %}<button class="btn small primary" onclick="openPay('{{ i.invoice_id }}','{{ i.invoice_number }}','{{ i.outstanding_amount }}')">Record Payment</button>{% endif %}</td></tr>{% else %}<tr><td colspan="6">No outstanding invoices.</td></tr>{% endfor %}</tbody></table></section>
+<section class="card table-card"><h2>Receipt History</h2><table><thead><tr><th>Receipt</th><th>Invoice</th><th>Customer</th><th>Amount</th><th>Method</th><th>Received By</th></tr></thead><tbody>
+{% for r in receipts %}<tr><td>{{ r.receipt_number }}</td><td>{{ r.invoice_number }}</td><td>{{ r.customer_name }}</td><td>{{ r.amount|money }}</td><td>{{ r.payment_method }}</td><td>{{ r.employee_id }}</td></tr>{% endfor %}</tbody></table></section>
+<div id="payModal" class="modal"><div class="modal-card"><button class="modal-close" onclick="closePay()">×</button><h2>Record Cash Receipt</h2><p id="payInvoice"></p><form method="post" action="{{ url_for('receipt_create') }}"><input type="hidden" name="invoice_id" id="invoice_id"><label>Amount<input type="number" name="amount" id="amount" min="1" required></label><label>Payment Method<select name="payment_method_id">{% for m in methods %}<option value="{{ m.payment_method_id }}">{{ m.name }}</option>{% endfor %}</select></label><label>Bank Reference<input name="bank_reference"></label><label>Remarks<textarea name="remarks"></textarea></label><button class="btn primary full">Record Payment</button></form></div></div>
+<script>
+function openPay(id,num,out){document.getElementById('invoice_id').value=id;document.getElementById('amount').max=out;document.getElementById('amount').value=out;document.getElementById('payInvoice').textContent=num+' · Outstanding Rp '+Number(out).toLocaleString('id-ID');document.getElementById('payModal').classList.add('open')}
+function closePay(){document.getElementById('payModal').classList.remove('open')}
+</script>
+{% endblock %}

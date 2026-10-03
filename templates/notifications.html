@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% set title="Notifications" %}
+{% block content %}
+<div class="card"><table><thead><tr><th>Time</th><th>Message</th><th>Status</th></tr></thead><tbody>{% for n in notifications %}<tr><td>{{ n.created_at }}</td><td>{{ n.message }}</td><td>{% if n.is_read %}Read{% else %}<form method="post" action="{{ url_for('notification_read',nid=n.notification_id) }}"><button class="btn small">Mark read</button></form>{% endif %}</td></tr>{% else %}<tr><td colspan="3">No notifications.</td></tr>{% endfor %}</tbody></table></div>
+{% endblock %}

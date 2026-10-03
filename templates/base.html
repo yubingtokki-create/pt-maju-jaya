@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{ title or "PT Maju Jaya AIS" }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+{% if current_user %}
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">MJ</div><div><b>PT Maju Jaya</b><span>Integrated AIS</span></div></div>
+    <div class="userbox"><b>{{ current_user.employee_name }}</b><small>{{ current_user.employee_id }} · {{ role_labels[current_user.role] }}</small></div>
+    <nav>
+      <a href="{{ url_for('dashboard') }}">▦ Dashboard</a>
+      {% if 'customers' in permissions %}<a href="{{ url_for('customers') }}">Customers</a>{% endif %}
+      {% if 'products' in permissions %}<a href="{{ url_for('products') }}">Products</a>{% endif %}
+      {% if 'sales_orders' in permissions %}<a href="{{ url_for('sales_orders') }}">Sales Orders</a>{% endif %}
+      {% if 'credit' in permissions %}<a href="{{ url_for('credit_queue') }}">Credit Approval</a>{% endif %}
+      {% if 'shipping' in permissions %}<a href="{{ url_for('shipping') }}">Shipping</a>{% endif %}
+      {% if 'invoices' in permissions %}<a href="{{ url_for('invoices') }}">Invoices</a>{% endif %}
+      {% if 'receipts' in permissions %}<a href="{{ url_for('receipts') }}">Cash Receipts</a>{% endif %}
+      {% if 'reports' in permissions %}<a href="{{ url_for('reports') }}">Reports</a>{% endif %}
+      {% if 'audit' in permissions %}<a href="{{ url_for('audit') }}">Audit Trail</a>{% endif %}
+      {% if 'users' in permissions %}<a href="{{ url_for('users') }}">Users</a>{% endif %}
+      <a href="{{ url_for('notifications') }}">Notifications</a>
+    </nav>
+    <a class="logout" href="{{ url_for('logout') }}">Logout</a>
+  </aside>
+  <main class="main">
+    <header class="topbar"><div><span class="eyebrow">REVENUE CYCLE</span><h1>{{ title or "Dashboard" }}</h1></div><div class="top-user">{{ current_user.employee_id }} · {{ role_labels[current_user.role] }}</div></header>
+    <section class="content">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}<div class="alert {{ category }}">{{ message }}</div>{% endfor %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </section>
+  </main>
+</div>
+{% else %}
+{% block auth_content %}{% endblock %}
+{% endif %}
+</body>
+</html>

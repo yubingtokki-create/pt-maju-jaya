@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% set title="Products" %}
+{% block content %}
+<div class="card table-card"><table><thead><tr><th>Code</th><th>Product</th><th>Category</th><th>Brand</th><th>Unit Price</th><th>Stock</th><th>Status</th></tr></thead><tbody>
+{% for p in products %}<tr><td>{{ p.product_code }}</td><td><b>{{ p.product_name }}</b><small>{{ p.description }}</small></td><td>{{ p.category }}</td><td>{{ p.brand }}</td><td>{{ p.selling_price|money }}</td><td><span class="stock">{{ p.available_stock }}</span></td><td>{{ p.product_status }}</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

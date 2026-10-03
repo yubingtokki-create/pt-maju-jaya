@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% set title="Create Shipping — " ~ so.so_number %}
+{% block content %}
+<div class="card"><h2>{{ so.so_number }}</h2><p>{{ so.delivery_address }}</p></div>
+<form method="post" class="card"><table><thead><tr><th>Product</th><th>Ordered</th><th>Already Shipped</th><th>Available Stock</th><th>Ship Now</th><th>Remark</th></tr></thead><tbody>
+{% for d in details %}<tr><td>{{ d.product_code }} — {{ d.product_name }}</td><td>{{ d.quantity }}</td><td>{{ d.shipped_before }}</td><td>{{ d.available_stock }}</td><td><input name="qty_{{ d.so_detail_id }}" type="number" min="0" max="{{ [d.quantity-d.shipped_before,d.available_stock]|min }}" value="0"></td><td><input name="remark_{{ d.so_detail_id }}"></td></tr>{% endfor %}
+</tbody></table><div class="form-actions"><a class="btn" href="{{ url_for('shipping') }}">Cancel</a><button class="btn primary">Confirm Shipping</button></div></form>
+{% endblock %}

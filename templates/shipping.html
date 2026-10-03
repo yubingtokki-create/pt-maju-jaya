@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% set title="Shipping" %}
+{% block content %}
+<div class="card"><p class="muted">Shipping is controlled by Sales Order status and, for credit sales, approved credit.</p></div>
+<div class="card table-card"><table><thead><tr><th>SO</th><th>Customer</th><th>Type</th><th>Amount</th><th>Status</th><th></th></tr></thead><tbody>
+{% for o in orders %}<tr><td>{{ o.so_number }}</td><td>{{ o.customer_name }}</td><td>{{ o.sales_type }}</td><td>{{ o.grand_total|money }}</td><td>{{ status_labels.get(o.order_status,o.order_status) }}</td><td><a class="btn small primary" href="{{ url_for('shipping_create',so_id=o.sales_order_id) }}">Create Shipping</a></td></tr>{% else %}<tr><td colspan="6" class="empty">No orders eligible for shipping.</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% set title="Dashboard" %}
+{% block content %}
+<div class="flow"><span>Customer</span><i>→</i><span>Sales Order</span><i>→</i><span>Credit Approval</span><i>→</i><span>Shipping</span><i>→</i><span>Invoice</span><i>→</i><span>Cash Receipt</span><i>→</i><span>Reports</span></div>
+<div class="kpi-grid">
+  <div class="kpi"><small>Total Sales</small><strong>{{ sales|money }}</strong></div>
+  <div class="kpi"><small>AR Outstanding</small><strong>{{ ar|money }}</strong></div>
+  <div class="kpi"><small>Cash Collected</small><strong>{{ collected|money }}</strong></div>
+  <div class="kpi"><small>Overdue AR</small><strong>{{ overdue|money }}</strong></div>
+  <div class="kpi"><small>Pending Credit</small><strong>{{ pending_credit }}</strong></div>
+  <div class="kpi"><small>Pending Shipping</small><strong>{{ pending_shipping }}</strong></div>
+  <div class="kpi"><small>Unpaid / Partial</small><strong>{{ unpaid }} / {{ partial }}</strong></div>
+  <div class="kpi"><small>Suspicious Customers</small><strong>{{ suspicious }}</strong></div>
+</div>
+<div class="grid two">
+  <section class="card">
+    <div class="card-head"><h2>Revenue Cycle Control</h2><span class="pill success">Integrated</span></div>
+    <div class="control-list">
+      <div><b>Authentication</b><span>Employee login required</span></div>
+      <div><b>Authorization</b><span>Role-based access</span></div>
+      <div><b>SoD</b><span>Sales ≠ Credit ≠ Warehouse ≠ Billing ≠ Cashier</span></div>
+      <div><b>Traceability</b><span>SO → Credit → Shipping → Invoice → Receipt</span></div>
+      <div><b>Audit</b><span>Every critical action is logged</span></div>
+    </div>
+  </section>
+  <section class="card">
+    <div class="card-head"><h2>Recent Sales Orders</h2><a href="{{ url_for('sales_orders') }}">View all</a></div>
+    <table><thead><tr><th>SO</th><th>Customer</th><th>Amount</th><th>Status</th></tr></thead><tbody>
+    {% for r in recent %}<tr><td>{{ r.so_number }}</td><td>{{ r.customer_name }}</td><td>{{ r.grand_total|money }}</td><td><span class="status {{ r.order_status|lower }}">{{ status_labels.get(r.order_status,r.order_status) }}</span></td></tr>{% else %}<tr><td colspan="4" class="empty">No transactions yet.</td></tr>{% endfor %}
+    </tbody></table>
+  </section>
+</div>
+{% endblock %}

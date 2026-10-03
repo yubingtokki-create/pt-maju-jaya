@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% set title="Sales Orders" %}
+{% block content %}
+<div class="page-actions"><p class="muted">Source transaction for the Revenue Cycle.</p>{% if current_user.role=='SALES' %}<a class="btn primary" href="{{ url_for('sales_order_new') }}">+ New Sales Order</a>{% endif %}</div>
+<div class="card table-card"><table><thead><tr><th>SO</th><th>Date</th><th>Customer</th><th>Salesperson</th><th>Type</th><th>Amount</th><th>Status</th></tr></thead><tbody>
+{% for o in orders %}<tr><td><a href="{{ url_for('sales_order_detail',so_id=o.sales_order_id) }}">{{ o.so_number }}</a></td><td>{{ o.order_date }}</td><td>{{ o.customer_name }}</td><td>{{ o.employee_id }}</td><td>{{ o.sales_type }}</td><td>{{ o.grand_total|money }}</td><td><span class="status {{ o.order_status|lower }}">{{ status_labels.get(o.order_status,o.order_status) }}</span></td></tr>{% else %}<tr><td colspan="7" class="empty">No Sales Orders.</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

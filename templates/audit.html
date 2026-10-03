@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% set title="Audit Trail" %}
+{% block content %}
+<div class="card table-card"><table><thead><tr><th>Timestamp</th><th>User</th><th>Role</th><th>Action</th><th>Module</th><th>Record</th><th>Description</th></tr></thead><tbody>
+{% for a in logs %}<tr><td>{{ a.timestamp }}</td><td>{{ a.employee_id or '-' }}</td><td>{{ role_labels.get(a.role,a.role or '-') }}</td><td><span class="pill">{{ a.action }}</span></td><td>{{ a.module }}</td><td>{{ a.record_id or '-' }}</td><td>{{ a.description or '-' }}</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

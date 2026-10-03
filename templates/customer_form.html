@@ -1,0 +1,18 @@
+{% extends "base.html" %}{% set title="New Customer" %}
+{% block content %}
+<div class="card form-card"><form method="post">
+<div class="form-grid">
+<label>Customer Code<input name="customer_code" required placeholder="CUST004"></label>
+<label>Customer Name<input name="customer_name" required></label>
+<label>Customer Type<select name="customer_type"><option>Corporate</option><option>Government</option><option>SME</option></select></label>
+<label>NPWP<input name="npwp"></label>
+<label>Contact Person<input name="contact_person"></label>
+<label>Phone<input name="phone"></label>
+<label>Email<input name="email" type="email" required></label>
+<label>Credit Limit<input name="credit_limit" type="number" min="0" value="0"></label>
+<label>Payment Terms<select name="payment_term_id">{% for t in terms %}<option value="{{ t.payment_term_id }}">{{ t.name }}</option>{% endfor %}</select></label>
+<label class="span2">Billing Address<textarea name="billing_address"></textarea></label>
+<label>City<input name="city"></label><label>Province<input name="province"></label><label>Postal Code<input name="postal_code"></label>
+</div><div class="form-actions"><a class="btn" href="{{ url_for('customers') }}">Cancel</a><button class="btn primary">Create Customer</button></div>
+</form></div>
+{% endblock %}

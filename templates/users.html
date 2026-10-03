@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% set title="Users & Roles" %}
+{% block content %}
+<div class="card table-card"><p class="muted">Demo role assignments. Transaction authority is enforced by the application.</p><table><thead><tr><th>Employee</th><th>Name</th><th>Username</th><th>Role</th><th>Department</th><th>Status</th></tr></thead><tbody>{% for u in users %}<tr><td>{{ u.employee_id }}</td><td>{{ u.employee_name }}</td><td>{{ u.username }}</td><td>{{ role_labels[u.role] }}</td><td>{{ u.department }}</td><td>{{ u.status }}</td></tr>{% endfor %}</tbody></table></div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% set title="Customers" %}
+{% block content %}
+<div class="page-actions"><div><p class="muted">Customer master + credit profile.</p></div>{% if current_user.role in ['ADMIN','SALES','MANAGER'] %}<a class="btn primary" href="{{ url_for('customer_new') }}">+ New Customer</a>{% endif %}</div>
+<div class="card table-card"><table><thead><tr><th>Code</th><th>Customer</th><th>Email</th><th>Verification</th><th>Credit Limit</th><th>Term</th><th>Status</th><th>Risk Flag</th><th></th></tr></thead><tbody>
+{% for c in customers %}<tr>
+<td><b>{{ c.customer_code }}</b></td><td>{{ c.customer_name }}<small>{{ c.customer_type }}</small></td><td>{{ c.email or '-' }}</td>
+<td>{% if c.email_verified %}<span class="pill success">Verified</span>{% else %}<span class="pill warning">Unverified</span>{% endif %}</td>
+<td>{{ c.credit_limit|money }}</td><td>{{ c.payment_term or '-' }}</td><td><span class="status">{{ c.customer_status }}</span></td>
+<td>{% if c.suspicious_flag %}<span class="pill danger">YES</span>{% else %}<span class="pill success">NO</span>{% endif %}</td>
+<td>{% if not c.email_verified and current_user.role in ['ADMIN','SALES','MANAGER'] %}<form method="post" action="{{ url_for('verify_customer',customer_id=c.customer_id) }}"><button class="btn small">Verify</button></form>{% endif %}</td>
+</tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

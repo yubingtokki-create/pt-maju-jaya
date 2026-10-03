@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% set title="Issue Invoice" %}
+{% block content %}
+<div class="card form-card"><h2>Invoice from Shipping {{ ship.shipping_number }}</h2>
+<div class="detail-grid"><b>Customer</b><span>{{ ship.customer_name }}</span><b>Sales Order</b><span>{{ ship.so_number }}</span><b>Invoice Amount</b><span>{{ ship.grand_total|money }}</span><b>Payment Terms</b><span>Net {{ ship.term_days or 0 }}</span></div>
+<div class="notice">The invoice will retrieve customer, Sales Order, shipping, amount, and payment-term data from existing records.</div>
+<form method="post"><div class="form-actions"><a class="btn" href="{{ url_for('invoices') }}">Cancel</a><button class="btn primary">Issue Invoice</button></div></form></div>
+{% endblock %}
