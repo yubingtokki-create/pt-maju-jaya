@@ -546,7 +546,7 @@ def init_db():
     conn.executescript(SCHEMA)
     conn.commit()
 
-        if scalar("SELECT COUNT(*) FROM users") == 0:
+            if scalar("SELECT COUNT(*) FROM users") == 0:
         demo = [
             ("SP001","Sarah Putri","sp001","password","SALES","Sales"),
             ("CO001","Citra Olivia","co001","password","CREDIT","Credit"),
